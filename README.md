@@ -1,4 +1,4 @@
-﻿# analisevideo
+# analisevideo
 
 <div align="center">
   <img src="capa/logo.svg" alt="Arckhé AI" height="48" />
@@ -8,17 +8,17 @@
 
 **ðŸ‡§ðŸ‡· [PortuguÃªs](README.md) Â· ðŸ‡ºðŸ‡¸ [English](README.en.md) Â· ðŸ‡ªðŸ‡¸ [EspaÃ±ol](README.es.md)**
 
-AnÃ¡lise **visual e cinematogrÃ¡fica** de vÃ­deo com o Gemini, arquivada num banco
+AnÃ¡lise **visual e cARCKHÉtogrÃ¡fica** de vÃ­deo com o Gemini, arquivada num banco
 local pesquisÃ¡vel. NÃ£o Ã© transcriÃ§Ã£o de fala: o que sai daqui Ã© o que um diretor
 de fotografia, um montador e um produtor musical enxergam no material.
 
-Roda como skill do [OpenPCBot](https://github.com/inematds/openpcbotv2) sob o
+Roda como skill do [OpenPCBot](https://github.com/linnoff88-dev/openpcbotv2) sob o
 comando `/analisevideo` â€” de propÃ³sito **nÃ£o dispara por vibe** (link solto ou
-"analisa esse vÃ­deo" continuam indo pro inemaVOX).
+"analisa esse vÃ­deo" continuam indo pro ARCKHÉVOX).
 
 ## ðŸ“– Guia de uso
 
-Guia completo (landing + passo a passo): **https://inematds.github.io/analisevideo/guia/**
+Guia completo (landing + passo a passo): **https://linnoff88-dev.github.io/
 
 ## Uso
 
@@ -81,8 +81,8 @@ O `analisa.py` tenta as chaves nesta ordem, parando na primeira que funcionar:
 |---|---|
 | `GOOGLE_API_KEY` | a de sempre |
 | `GEMINI_API_KEY` | idem (deduplicada se for o mesmo valor) |
-| `GEMINI_API_KEY_INEMACCBOT_TIME` | `projects/1056030032122` |
-| `GEMINI_API_KEY_INEMACCBOT_PROMPTS` | `projects/1000152753819` |
+| `GEMINI_API_KEY_ARCKHÉCCBOT_TIME` | `projects/1056030032122` |
+| `GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS` | `projects/1000152753819` |
 
 Todas saem de `~/projetos/wifi/.env` (ou do `.env` local).
 
