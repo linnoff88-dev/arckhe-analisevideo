@@ -1,6 +1,6 @@
-"""RotaÃ§Ã£o de chave do Gemini: cota/bloqueio troca de chave, congestÃ£o espera.
+"""RotaêÂ§êÂ£o de chave do Gemini: cota/bloqueio troca de chave, congestêÂ£o espera.
 
-Roda sem rede: o `urlopen` Ã© trocado por um dublÃª que devolve os cÃ³digos que a
+Roda sem rede: o `urlopen` êÂ© trocado por um dublêÂª que devolve os cêÂ³digos que a
 gente quer provar.
 """
 import json
@@ -56,36 +56,36 @@ def sem_espera(monkeypatch):
 
 @pytest.fixture
 def video(tmp_path):
-    """Um arquivo pequeno de verdade: o caminho inline lÃª o disco."""
+    """Um arquivo pequeno de verdade: o caminho inline lêÂª o disco."""
     p = tmp_path / "v.mp4"
     p.write_bytes(b"\x00" * 64)
     return str(p)
 
 
 def test_chaves_deduplicam_pelo_valor(monkeypatch):
-    """GOOGLE_API_KEY e GEMINI_API_KEY costumam ser a MESMA chave â€” tentar duas
-    vezes a mesma coisa depois de um 429 Ã© sÃ³ perder tempo."""
+    """GOOGLE_API_KEY e GEMINI_API_KEY costumam ser a MESMA chave ê¢â¬â tentar duas
+    vezes a mesma coisa depois de um 429 êÂ© sêÂ³ perder tempo."""
     monkeypatch.setenv("GOOGLE_API_KEY", "aaa")
     monkeypatch.setenv("GEMINI_API_KEY", "aaa")
-    monkeypatch.setenv("GEMINI_API_KEY_ARCKHÉCCBOT_TIME", "bbb")
-    monkeypatch.delenv("GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS", raising=False)
+    monkeypatch.setenv("GEMINI_API_KEY_ARCKHêCCBOT_TIME", "bbb")
+    monkeypatch.delenv("GEMINI_API_KEY_ARCKHêCCBOT_PROMPTS", raising=False)
     assert analisa.chaves_disponiveis() == [("GOOGLE_API_KEY", "aaa"),
-                                            ("GEMINI_API_KEY_ARCKHÉCCBOT_TIME", "bbb")]
+                                            ("GEMINI_API_KEY_ARCKHêCCBOT_TIME", "bbb")]
 
 
 def test_chaves_respeitam_a_ordem(monkeypatch):
     for n in analisa.NOMES_CHAVE:
         monkeypatch.delenv(n, raising=False)
-    monkeypatch.setenv("GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS", "z")
+    monkeypatch.setenv("GEMINI_API_KEY_ARCKHêCCBOT_PROMPTS", "z")
     monkeypatch.setenv("GOOGLE_API_KEY", "a")
     assert [n for n, _ in analisa.chaves_disponiveis()] == [
-        "GOOGLE_API_KEY", "GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS"]
+        "GOOGLE_API_KEY", "GEMINI_API_KEY_ARCKHêCCBOT_PROMPTS"]
 
 
 @pytest.mark.parametrize("codigo", [429, 403])
 def test_cota_e_bloqueio_pedem_OUTRA_chave(monkeypatch, codigo, video):
-    """429 (cota) e 403 (bloqueada) nÃ£o melhoram com espera â€” melhoram com
-    outra chave, que estÃ¡ em outro projeto."""
+    """429 (cota) e 403 (bloqueada) nêÂ£o melhoram com espera ê¢â¬â melhoram com
+    outra chave, que estêÂ¡ em outro projeto."""
     monkeypatch.setattr(urllib.request, "urlopen", lambda *a, **k: (_ for _ in ()).throw(_erro(codigo)))
     with pytest.raises(analisa.CotaOuBloqueio) as e:
         analisa.tentar_com("k", video, "video/mp4", 10, "ctx", (1, 2))
@@ -93,7 +93,7 @@ def test_cota_e_bloqueio_pedem_OUTRA_chave(monkeypatch, codigo, video):
 
 
 def test_congestao_espera_e_NAO_troca(monkeypatch, video):
-    """503 Ã© o Gemini lotado: a chave nÃ£o tem culpa e trocar nÃ£o ajuda."""
+    """503 êÂ© o Gemini lotado: a chave nêÂ£o tem culpa e trocar nêÂ£o ajuda."""
     chamadas = []
 
     def fake(*a, **k):
@@ -108,12 +108,12 @@ def test_congestao_espera_e_NAO_troca(monkeypatch, video):
 
 
 def test_congestao_que_NAO_passa_vira_troca_de_chave(monkeypatch, video):
-    """503 esgotado troca de chave â€” porque o 503 do Gemini e POR PROJETO.
+    """503 esgotado troca de chave ê¢â¬â porque o 503 do Gemini e POR PROJETO.
 
     Medido em 2026-08-24: no mesmo minuto, GOOGLE_API_KEY e GEMINI_API_KEY
-    responderam e as duas GEMINI_API_KEY_ARCKHÉCCBOT_* devolveram 503. O codigo
+    responderam e as duas GEMINI_API_KEY_ARCKHêCCBOT_* devolveram 503. O codigo
     insistia 6 vezes com a chave lotada (5,5 min) e desistia com duas chaves
-    boas na lista, nunca tentadas â€” foi assim que os jobs 5156/5158/5159
+    boas na lista, nunca tentadas ê¢â¬â foi assim que os jobs 5156/5158/5159
     morreram com o video ja baixado e comprimido.
 
     A espera continua vindo primeiro (`test_congestao_espera_e_NAO_troca`): a
@@ -127,7 +127,7 @@ def test_congestao_que_NAO_passa_vira_troca_de_chave(monkeypatch, video):
 
 
 def test_upload_com_cota_estourada_tambem_troca(monkeypatch, video):
-    """O upload Ã© o passo caro do arquivo grande. Sem converter o 429 dele,
+    """O upload êÂ© o passo caro do arquivo grande. Sem converter o 429 dele,
     a troca de chave nunca aconteceria no caso que mais importa."""
     monkeypatch.setattr(analisa, "upload",
                         lambda *a, **k: (_ for _ in ()).throw(_erro(429)))
@@ -137,15 +137,15 @@ def test_upload_com_cota_estourada_tambem_troca(monkeypatch, video):
 
 
 def test_main_TROCA_de_chave_e_conclui(monkeypatch, video, capsys):
-    """O caminho inteiro: a 1Âª chave estoura a cota, a 2Âª entrega a anÃ¡lise.
+    """O caminho inteiro: a 1êÂª chave estoura a cota, a 2êÂª entrega a anêÂ¡lise.
 
-    Ã‰ este o teste que prova o pedido â€” ter trÃªs chaves nÃ£o vale nada se o
-    programa nÃ£o passar para a seguinte sozinho.
+    êâ° este o teste que prova o pedido ê¢â¬â ter trêÂªs chaves nêÂ£o vale nada se o
+    programa nêÂ£o passar para a seguinte sozinho.
     """
     for n in analisa.NOMES_CHAVE:
         monkeypatch.delenv(n, raising=False)
     monkeypatch.setenv("GOOGLE_API_KEY", "estourada")
-    monkeypatch.setenv("GEMINI_API_KEY_ARCKHÉCCBOT_TIME", "boa")
+    monkeypatch.setenv("GEMINI_API_KEY_ARCKHêCCBOT_TIME", "boa")
 
     usadas = []
 
@@ -162,14 +162,14 @@ def test_main_TROCA_de_chave_e_conclui(monkeypatch, video, capsys):
     assert usadas == ["estourada", "boa"]           # tentou uma, passou pra outra
     saida = capsys.readouterr()
     assert json.loads(saida.out)["resumo"] == "ok"
-    assert "GEMINI_API_KEY_ARCKHÉCCBOT_TIME" in saida.err   # diz qual usou
+    assert "GEMINI_API_KEY_ARCKHêCCBOT_TIME" in saida.err   # diz qual usou
 
 
 def test_main_com_TODAS_estouradas_explica(monkeypatch, video, capsys):
     for n in analisa.NOMES_CHAVE:
         monkeypatch.delenv(n, raising=False)
     monkeypatch.setenv("GOOGLE_API_KEY", "a")
-    monkeypatch.setenv("GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS", "b")
+    monkeypatch.setenv("GEMINI_API_KEY_ARCKHêCCBOT_PROMPTS", "b")
     monkeypatch.setattr(urllib.request, "urlopen",
                         lambda *a, **k: (_ for _ in ()).throw(_erro(429)))
     monkeypatch.setattr(sys, "argv", ["analisa.py", video, "12"])
@@ -202,7 +202,7 @@ def test_reserva_entra_quando_o_gemini_inteiro_recusa(monkeypatch, video, capsys
     assert analisa.main() == 0
     saida = json.loads(capsys.readouterr().out)
     assert saida["resumo"] == "veio da reserva"
-    # O modelo REGISTRADO tem que ser o que analisou â€” senao o banco diz Gemini
+    # O modelo REGISTRADO tem que ser o que analisou ê¢â¬â senao o banco diz Gemini
     # para uma analise que o Gemini nao fez.
     assert saida["_modelo"] == analisa.OPENROUTER_MODELO
 
@@ -301,7 +301,7 @@ def test_ANALISEVIDEO_MOTOR_gemini_devolve_a_ordem_antiga(monkeypatch, video, ca
 def test_reserva_sempre_avisa_no_stderr(monkeypatch, video, capsys):
     """Motor pago e nao-padrao: quem le o terminal tem de saber que foi ele.
 
-    Antes o unico aviso final era "analise feita com X" gated em `chaves` â€”
+    Antes o unico aviso final era "analise feita com X" gated em `chaves` ê¢â¬â
     sem chave nenhuma do Gemini, a reserva respondia calada.
     """
     monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")

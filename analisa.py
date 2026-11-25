@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Analise VISUAL/cARCKHÉtografica de um video com o Gemini.
+"""Analise VISUAL/cARCKHêtografica de um video com o Gemini.
 
 Uso: analisa.py <video> <duracao_segundos> [meta.json] > analise.json
 
@@ -66,7 +66,7 @@ Campos obrigatorios:
   prompt_gerador_video: "prompt em ingles do trecho mais forte (o melhor da
   lista abaixo, repetido aqui por compatibilidade)",
   prompts_gerador_video: [
-    NO MINIMO 5 e no maximo 10 itens â€” UM PROMPT POR CENA, cobrindo o video
+    NO MINIMO 5 e no maximo 10 itens ê¢â¬â UM PROMPT POR CENA, cobrindo o video
     do inicio ao fim (nao so o comeco), cada um
     {cena: int (1,2,3...), t_inicio: "mm:ss", t_fim: "mm:ss",
      titulo: "rotulo curto em pt-BR da cena",
@@ -137,24 +137,24 @@ def upload(key: str, path: str, mime: str) -> str:
     return uri
 
 
-# ORDEM das chaves. A primeira Ã© a de sempre; as outras existem porque estÃ£o em
-# PROJETOS diferentes â€” cota estourada num projeto nÃ£o estoura no outro.
+# ORDEM das chaves. A primeira êÂ© a de sempre; as outras existem porque estêÂ£o em
+# PROJETOS diferentes ê¢â¬â cota estourada num projeto nêÂ£o estoura no outro.
 NOMES_CHAVE = ("GOOGLE_API_KEY", "GEMINI_API_KEY",
-               "GEMINI_API_KEY_ARCKHÉCCBOT_TIME", "GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS")
+               "GEMINI_API_KEY_ARCKHêCCBOT_TIME", "GEMINI_API_KEY_ARCKHêCCBOT_PROMPTS")
 
 # 429 = cota; 403 = chave bloqueada/restrita. Nos dois casos OUTRA chave resolve,
-# e esperar nÃ£o resolve nada â€” Ã© aqui que a redundÃ¢ncia vale.
+# e esperar nêÂ£o resolve nada ê¢â¬â êÂ© aqui que a redundêÂ¢ncia vale.
 TROCA_DE_CHAVE = (429, 403)
-# 5xx Ã© o Gemini congestionado: a chave nÃ£o tem culpa e trocar nÃ£o ajuda. Espera.
+# 5xx êÂ© o Gemini congestionado: a chave nêÂ£o tem culpa e trocar nêÂ£o ajuda. Espera.
 ESPERA_E_TENTA = (500, 502, 503)
 
 
 def chaves_disponiveis() -> list:
     """As chaves na ordem, sem repetir valor.
 
-    Deduplica pelo VALOR, nÃ£o pelo nome: `GOOGLE_API_KEY` e `GEMINI_API_KEY`
+    Deduplica pelo VALOR, nêÂ£o pelo nome: `GOOGLE_API_KEY` e `GEMINI_API_KEY`
     costumam apontar para a mesma chave, e tentar duas vezes a mesma coisa
-    depois de um 429 Ã© sÃ³ perder tempo.
+    depois de um 429 êÂ© sêÂ³ perder tempo.
     """
     saida, vistos = [], set()
     for nome in NOMES_CHAVE:
@@ -177,14 +177,14 @@ def tentar_com(key: str, path: str, mime: str, size: int, ctx: str, esperas) -> 
     """Upload (se preciso) + geracao, com UMA chave.
 
     O upload entra aqui dentro de proposito: o arquivo enviado pertence ao
-    PROJETO da chave, entao trocar de chave obriga a subir de novo â€” reaproveitar
+    PROJETO da chave, entao trocar de chave obriga a subir de novo ê¢â¬â reaproveitar
     o `file_uri` da chave anterior daria 403 na geracao.
     """
     if size <= INLINE_LIMIT:
         part = {"inline_data": {"mime_type": mime,
                                 "data": base64.b64encode(open(path, "rb").read()).decode()}}
     else:
-        # O upload tambem recusa por cota/bloqueio â€” e Ã© ele que gasta o tempo
+        # O upload tambem recusa por cota/bloqueio ê¢â¬â e êÂ© ele que gasta o tempo
         # do arquivo grande. Sem converter aqui, um 429 no upload viraria erro
         # final em vez de troca de chave.
         try:
@@ -213,7 +213,7 @@ def tentar_com(key: str, path: str, mime: str, size: int, ctx: str, esperas) -> 
                 raise CotaOuBloqueio(e.code) from e
             if e.code in ESPERA_E_TENTA and tentativa < len(esperas):
                 espera = esperas[tentativa]
-                print(f"[analisevideo] Gemini {e.code} â€” esperando {espera}s "
+                print(f"[analisevideo] Gemini {e.code} ê¢â¬â esperando {espera}s "
                       f"(tentativa {tentativa + 1}/{len(esperas) + 1})",
                       file=sys.stderr, flush=True)
                 time.sleep(espera)
@@ -221,15 +221,15 @@ def tentar_com(key: str, path: str, mime: str, size: int, ctx: str, esperas) -> 
             # 5xx ESGOTADO vira troca de chave, e nao erro final.
             #
             # O comentario aqui dizia "a chave nao tem culpa e trocar nao ajuda"
-            # â€” e isso e falso, medido em 2026-08-24: no mesmo minuto,
+            # ê¢â¬â e isso e falso, medido em 2026-08-24: no mesmo minuto,
             # GOOGLE_API_KEY e GEMINI_API_KEY responderam e as duas
-            # GEMINI_API_KEY_ARCKHÉCCBOT_* devolveram 503 ("This model is
+            # GEMINI_API_KEY_ARCKHêCCBOT_* devolveram 503 ("This model is
             # currently experiencing high demand"). O 503 do Gemini e por
             # PROJETO, nao global.
             #
             # Foi o que matou os jobs 5156, 5158 e 5159: a primeira chave estava
             # em 429 (cota), a segunda caiu em 503, o codigo insistiu 6 vezes
-            # com ELA (5,5 min de espera) e desistiu â€” com duas chaves boas na
+            # com ELA (5,5 min de espera) e desistiu ê¢â¬â com duas chaves boas na
             # lista, nunca tentadas, e o video ja baixado e comprimido.
             if e.code in ESPERA_E_TENTA:
                 raise CotaOuBloqueio(e.code) from e
@@ -241,10 +241,10 @@ def tentar_com(key: str, path: str, mime: str, size: int, ctx: str, esperas) -> 
 # ---------------------------------------------------------------- reserva
 # Quando TODAS as chaves do Gemini recusam, o que se perde nao e uma chamada de
 # API: e o download e a compressao que ja foram feitos (o clipe do Facebook de
-# 41 MB levou minutos so para chegar aqui). Foi o que aconteceu em 2026-08-24 â€”
+# 41 MB levou minutos so para chegar aqui). Foi o que aconteceu em 2026-08-24 ê¢â¬â
 # tres chaves distintas em 429 no mesmo minuto, com o video pronto no disco.
 #
-# 2026-08-26: o `stealth/ox-alpha` SUMIU do OpenRouter â€” era exatamente o risco
+# 2026-08-26: o `stealth/ox-alpha` SUMIU do OpenRouter ê¢â¬â era exatamente o risco
 # que o comentario anterior anotava ("um modelo em avaliacao, que pode sumir").
 # A reserva passou a ser o `google/gemini-3.7-flash` pelo OpenRouter, que tambem
 # aceita VIDEO. Quando as chaves do Gemini estouram a cota do dia, a cota do
@@ -262,7 +262,7 @@ def tentar_openrouter(path: str, mime: str, ctx: str, esperas) -> str:
     """A analise pelo motor de reserva. Levanta se nao houver chave ou se falhar.
 
     O 429 daqui NAO e cota nossa: e `rate-limited upstream`, um pool
-    compartilhado entre todos os usuarios do OpenRouter. Passa sozinho â€” por
+    compartilhado entre todos os usuarios do OpenRouter. Passa sozinho ê¢â¬â por
     isso espera e insiste, em vez de desistir.
     """
     key = (os.environ.get("OPENROUTER_API_KEY") or "").strip()
@@ -288,16 +288,16 @@ def tentar_openrouter(path: str, mime: str, ctx: str, esperas) -> str:
         except urllib.error.HTTPError as e:
             if e.code in (429,) + ESPERA_E_TENTA and tentativa < len(esperas):
                 espera = esperas[tentativa]
-                print(f"[analisevideo] reserva {e.code} â€” esperando {espera}s "
+                print(f"[analisevideo] reserva {e.code} ê¢â¬â esperando {espera}s "
                       f"(tentativa {tentativa + 1}/{len(esperas) + 1})",
                       file=sys.stderr, flush=True)
                 time.sleep(espera)
                 continue
             # O CORPO da resposta vai junto: um 402 sem ele dizia so "Payment
             # Required", e a causa real ("requires at least $1.00 in balance for
-            # video" â€” teto da CHAVE, nao da conta) ficou invisivel por dias
+            # video" ê¢â¬â teto da CHAVE, nao da conta) ficou invisivel por dias
             # (2026-09-08). Sem o corpo, o dono adivinha entre saldo, chave e
-            # modelo â€” tres acoes diferentes.
+            # modelo ê¢â¬â tres acoes diferentes.
             corpo = ""
             try:
                 corpo = e.read().decode("utf-8", "replace")[:300].replace("\n", " ")
@@ -315,7 +315,7 @@ def main() -> int:
 
     chaves = chaves_disponiveis()
     if not chaves and not (os.environ.get("OPENROUTER_API_KEY") or "").strip():
-        print(json.dumps({"erro": "nenhuma chave encontrada â€” Gemini "
+        print(json.dumps({"erro": "nenhuma chave encontrada ê¢â¬â Gemini "
                                   "(GOOGLE_API_KEY, GEMINI_API_KEY, GEMINI_API_KEY_*) "
                                   "nem reserva (OPENROUTER_API_KEY)"}))
         return 1
@@ -329,7 +329,7 @@ def main() -> int:
         ctx += "\nPedido especifico do usuario (responda tambem em 'pedido_extra'): " + extra
 
     # 5xx do Gemini sao rotina em horario de pico: tenta de novo, com a MESMA
-    # chave. A espera era 5s, 10s, 15s â€” 30 segundos no total, que devolve o
+    # chave. A espera era 5s, 10s, 15s ê¢â¬â 30 segundos no total, que devolve o
     # pedido para dentro da MESMA congestao. Em 2026-08-22 uma analise morreu
     # assim (job 4775, 503) depois de ja ter baixado 22 MB e comprimido o video:
     # o trabalho caro estava feito e o que faltava era esperar.
@@ -341,7 +341,7 @@ def main() -> int:
     falhas = []
 
     # QUEM VAI NA FRENTE. Decisao do dono em 2026-08-26: o Gemini direto
-    # primeiro, a reserva atras â€” de volta a ordem original.
+    # primeiro, a reserva atras ê¢â¬â de volta a ordem original.
     #
     # Em 2026-08-25 a reserva tinha ido para a frente porque o `ox-alpha` era
     # gratis e as chaves do Gemini estouravam a cota com nove analises. Esse
@@ -361,7 +361,7 @@ def main() -> int:
             modelo_usado = OPENROUTER_MODELO
         except Exception as e:
             falhas.append(f"{OPENROUTER_MODELO}: {e}")
-            print(f"[analisevideo] {OPENROUTER_MODELO} recusou ({e}) â€” indo para o Gemini",
+            print(f"[analisevideo] {OPENROUTER_MODELO} recusou ({e}) ê¢â¬â indo para o Gemini",
                   file=sys.stderr, flush=True)
 
     for nome, key in chaves:
@@ -377,13 +377,13 @@ def main() -> int:
             # sem necessidade. Vale para 429/403 (cota) e para 5xx esgotado
             # (congestao daquele projeto).
             falhas.append(f"{nome}: HTTP {e.codigo}")
-            print(f"[analisevideo] {nome} recusou (HTTP {e.codigo}) â€” "
+            print(f"[analisevideo] {nome} recusou (HTTP {e.codigo}) ê¢â¬â "
                   f"tentando a proxima chave", file=sys.stderr, flush=True)
             continue
     if raw is None and not reserva_primeiro:
         # O video ja esta baixado e comprimido: desistir aqui joga fora o passo
         # caro. A reserva e a diferenca entre "falhou" e "saiu mais devagar".
-        print("[analisevideo] ATENCAO: Gemini indisponivel em todas as chaves â€” "
+        print("[analisevideo] ATENCAO: Gemini indisponivel em todas as chaves ê¢â¬â "
               f"indo para a reserva paga {OPENROUTER_MODELO} (OpenRouter)",
               file=sys.stderr, flush=True)
         try:
@@ -394,13 +394,13 @@ def main() -> int:
             falhas.append(f"reserva {OPENROUTER_MODELO}: {e}")
     if raw is None:
         # Nomear QUEM falhou e por que: "nao deu" manda o dono adivinhar entre
-        # cota, bloqueio e provedor fora do ar â€” tres acoes diferentes.
-        print(json.dumps({"erro": "nenhum motor respondeu (reserva e Gemini) â€” cota, "
+        # cota, bloqueio e provedor fora do ar ê¢â¬â tres acoes diferentes.
+        print(json.dumps({"erro": "nenhum motor respondeu (reserva e Gemini) ê¢â¬â cota, "
                                   "bloqueio ou indisponibilidade: " + "; ".join(falhas)},
                          ensure_ascii=False))
         return 1
     # A reserva e paga e nao e o motor padrao: quando ela responde, o dono tem
-    # de saber SEMPRE â€” inclusive quando nao havia chave do Gemini nenhuma e o
+    # de saber SEMPRE ê¢â¬â inclusive quando nao havia chave do Gemini nenhuma e o
     # aviso de troca abaixo ficaria calado.
     if usada == OPENROUTER_MODELO:
         print(f"[analisevideo] ATENCAO: analise feita com {OPENROUTER_MODELO} "

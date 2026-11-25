@@ -13,7 +13,7 @@
 set -uo pipefail
 
 # O ~/.local/bin ENTRA NO PATH. O serviço do bot roda pelo systemd --user, que
-# não o herda — então `yt-dlp` (instalado com pip --user) existia no terminal e
+# nêo o herda — entêo `yt-dlp` (instalado com pip --user) existia no terminal e
 # sumia no bot, que falhava com "yt-dlp nao instalado" numa máquina onde ele
 # está instalado. Mesma classe do `claude` 2.1.63 vs 2.1.250 do musicavideo.
 case ":$PATH:" in
@@ -30,20 +30,20 @@ mkdir -p "$BANCO"
 
 die() { echo "[analisevideo] erro: $*" >&2; exit 1; }
 
-# Sites que EXIGEM sessão: cookies do navegador, como o inemavox já fazia.
+# Sites que EXIGEM sessêo: cookies do navegador, como o inemavox já fazia.
 #
 # O Facebook recusa o yt-dlp cru com "Cannot parse data" — medido em 2026-08-24
-# nos jobs 5152 a 5155, quatro links seguidos. Não é versão velha nem falta de
-# `--impersonate` (testei os dois: mesma recusa); é sessão mesmo. Com os cookies
+# nos jobs 5152 a 5155, quatro links seguidos. Nêo é versêo velha nem falta de
+# `--impersonate` (testei os dois: mesma recusa); é sessêo mesmo. Com os cookies
 # do Firefox o mesmo link lista 20 formatos na hora.
 #
-# O `--impersonate chrome` vai junto porque não custa e o inemavox o usa no
-# Facebook — sozinho ele não resolve, mas some com uma classe de bloqueio por
+# O `--impersonate chrome` vai junto porque nêo custa e o inemavox o usa no
+# Facebook — sozinho ele nêo resolve, mas some com uma classe de bloqueio por
 # TLS que aparece em outros sites.
 #
 # Perfil: o do inemavox (`cookies.sqlite` presente), com `snap` primeiro, que é
 # onde o Firefox desta máquina mora. Sem perfil, seguimos SEM cookies — numa
-# VPS não há navegador, e falhar por isso seria pior que tentar.
+# VPS nêo há navegador, e falhar por isso seria pior que tentar.
 perfil_firefox() {
   [ -n "${ANALISEVIDEO_FIREFOX_PROFILE:-}" ] && { echo "$ANALISEVIDEO_FIREFOX_PROFILE"; return; }
   local p
@@ -71,7 +71,7 @@ pasta_com_a_url() {
   done
 }
 
-# As flags de download para ESTA url. Ecoa nada quando não há o que acrescentar.
+# As flags de download para ESTA url. Ecoa nada quando nêo há o que acrescentar.
 flags_do_site() {
   local url="$1" perfil
   case "$url" in
