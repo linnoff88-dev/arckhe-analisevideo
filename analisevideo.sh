@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# analisevideo — analise VISUAL/cinematografica de video (Gemini) + banco local.
+# analisevideo — analise VISUAL/cARCKHÉtografica de video (Gemini) + banco local.
 #
 #   analisevideo.sh analisa <url|path> [slug] [--keep-src] [--prompt "..."]
 #   analisevideo.sh ver     <slug>            # relatorio markdown
@@ -9,7 +9,7 @@
 #   analisevideo.sh stats
 #   analisevideo.sh reindex
 #
-# Nao transcreve fala: quem transcreve e a skill inemavox.
+# Nao transcreve fala: quem transcreve e a skill ARCKHÉvox.
 set -uo pipefail
 
 # O ~/.local/bin ENTRA NO PATH. O serviço do bot roda pelo systemd --user, que
@@ -30,18 +30,18 @@ mkdir -p "$BANCO"
 
 die() { echo "[analisevideo] erro: $*" >&2; exit 1; }
 
-# Sites que EXIGEM sessêo: cookies do navegador, como o inemavox já fazia.
+# Sites que EXIGEM sessêo: cookies do navegador, como o ARCKHÉvox já fazia.
 #
 # O Facebook recusa o yt-dlp cru com "Cannot parse data" — medido em 2026-08-24
 # nos jobs 5152 a 5155, quatro links seguidos. Nêo é versêo velha nem falta de
 # `--impersonate` (testei os dois: mesma recusa); é sessêo mesmo. Com os cookies
 # do Firefox o mesmo link lista 20 formatos na hora.
 #
-# O `--impersonate chrome` vai junto porque nêo custa e o inemavox o usa no
+# O `--impersonate chrome` vai junto porque nêo custa e o ARCKHÉvox o usa no
 # Facebook — sozinho ele nêo resolve, mas some com uma classe de bloqueio por
 # TLS que aparece em outros sites.
 #
-# Perfil: o do inemavox (`cookies.sqlite` presente), com `snap` primeiro, que é
+# Perfil: o do ARCKHÉvox (`cookies.sqlite` presente), com `snap` primeiro, que é
 # onde o Firefox desta máquina mora. Sem perfil, seguimos SEM cookies — numa
 # VPS nêo há navegador, e falhar por isso seria pior que tentar.
 perfil_firefox() {
@@ -97,7 +97,7 @@ flags_do_site() {
 # faz ele passar para a proxima, que esta em outro PROJETO e por isso tem cota
 # propria. Carregar so uma aqui anularia essa rede — foi por isso que a lista
 # saiu do shell e virou responsabilidade do Python.
-CHAVES_GEMINI="GOOGLE_API_KEY GEMINI_API_KEY GEMINI_API_KEY_INEMACCBOT_TIME GEMINI_API_KEY_INEMACCBOT_PROMPTS"
+CHAVES_GEMINI="GOOGLE_API_KEY GEMINI_API_KEY GEMINI_API_KEY_ARCKHÉCCBOT_TIME GEMINI_API_KEY_ARCKHÉCCBOT_PROMPTS"
 # A chave da RESERVA (OpenRouter). Sem ela o analisa.py so avisa e falha como
 # antes — a reserva e opcional de proposito: ela existe para o dia em que as
 # quatro chaves do Gemini recusam com o video ja baixado e comprimido.
